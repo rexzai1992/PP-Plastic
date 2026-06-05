@@ -15,25 +15,17 @@ interface ProductGridProps {
 export function ProductGrid({
   products,
   onQuickAdd,
-  onToggleCompare,
-  comparedSlugs = [],
   className,
 }: ProductGridProps) {
   return (
     <div
       className={cn(
-        "grid items-start gap-6 sm:grid-cols-2 xl:grid-cols-3",
+        "grid items-stretch gap-6 sm:grid-cols-2 xl:grid-cols-3",
         className,
       )}
     >
       {products.map((product) => (
-        <ProductCard
-          key={product.id}
-          isCompared={comparedSlugs.includes(product.slug)}
-          onQuickAdd={onQuickAdd}
-          onToggleCompare={onToggleCompare}
-          product={product}
-        />
+        <ProductCard key={product.id} product={product} onQuickAdd={onQuickAdd} />
       ))}
     </div>
   );

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import type { ContactFormValues } from "@/types/quote";
 import { generateContactMessage, generateWhatsAppLink } from "@/lib/whatsapp";
+import { useLanguage } from "@/components/LanguageProvider";
 
 const initialValues: ContactFormValues = {
   company: "",
@@ -14,6 +15,36 @@ const initialValues: ContactFormValues = {
 };
 
 export function ContactForm() {
+  const { language } = useLanguage();
+  const copy =
+    language === "bm"
+      ? {
+          nameError: "Nama diperlukan.",
+          phoneError: "Nombor telefon diperlukan.",
+          title: "Hubungi Pasukan Jualan",
+          description:
+            "Borang ini akan buka WhatsApp supaya team kami boleh respon dengan cepat.",
+          name: "Nama",
+          company: "Syarikat",
+          phone: "Telefon",
+          email: "Email",
+          message: "Mesej",
+          placeholder: "Beritahu produk plastik atau maklumat harga yang anda perlukan.",
+          send: "Hantar ke WhatsApp",
+        }
+      : {
+          nameError: "Name is required.",
+          phoneError: "Phone number is required.",
+          title: "Contact Sales Team",
+          description: "This contact form redirects to WhatsApp so your team can respond quickly.",
+          name: "Name",
+          company: "Company",
+          phone: "Phone",
+          email: "Email",
+          message: "Message",
+          placeholder: "Tell us what plastic products or quotation details you need.",
+          send: "Send to WhatsApp",
+        };
   const [values, setValues] = useState(initialValues);
 
   function updateValue<Key extends keyof ContactFormValues>(
@@ -28,12 +59,12 @@ export function ContactForm() {
 
   function handleSubmit() {
     if (!values.name.trim()) {
-      toast.error("Name is required.");
+      toast.error(copy.nameError);
       return;
     }
 
     if (!values.phone.trim()) {
-      toast.error("Phone number is required.");
+      toast.error(copy.phoneError);
       return;
     }
 
@@ -46,14 +77,14 @@ export function ContactForm() {
 
   return (
     <div className="rounded-3xl border border-[#E5E7EB] bg-white p-8 shadow-sm">
-      <h2 className="text-2xl font-semibold text-[#1F2933]">Contact Sales Team</h2>
+      <h2 className="text-2xl font-semibold text-[#1F2933]">{copy.title}</h2>
       <p className="mt-3 text-sm leading-7 text-[#6B7280]">
-        This contact form redirects to WhatsApp so your team can respond quickly.
+        {copy.description}
       </p>
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <label className="block text-sm font-medium text-[#1F2933]">
-          Name
+          {copy.name}
           <input
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             value={values.name}
@@ -61,7 +92,7 @@ export function ContactForm() {
           />
         </label>
         <label className="block text-sm font-medium text-[#1F2933]">
-          Company
+          {copy.company}
           <input
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             value={values.company}
@@ -69,7 +100,7 @@ export function ContactForm() {
           />
         </label>
         <label className="block text-sm font-medium text-[#1F2933]">
-          Phone
+          {copy.phone}
           <input
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             value={values.phone}
@@ -77,7 +108,7 @@ export function ContactForm() {
           />
         </label>
         <label className="block text-sm font-medium text-[#1F2933]">
-          Email
+          {copy.email}
           <input
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             value={values.email}
@@ -87,10 +118,10 @@ export function ContactForm() {
       </div>
 
       <label className="mt-4 block text-sm font-medium text-[#1F2933]">
-        Message
+        {copy.message}
         <textarea
           className="mt-2 min-h-28 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 py-3 text-sm outline-none transition focus:border-[#0F4C81]"
-          placeholder="Tell us what plastic products or quotation details you need."
+          placeholder={copy.placeholder}
           value={values.message}
           onChange={(event) => updateValue("message", event.target.value)}
         />
@@ -101,7 +132,7 @@ export function ContactForm() {
         type="button"
         onClick={handleSubmit}
       >
-        Send to WhatsApp
+        {copy.send}
       </button>
     </div>
   );

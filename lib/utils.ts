@@ -5,6 +5,7 @@ export const SITE_NAME = "RR Plastic Packaging Trading";
 export const SITE_NAME_SHORT = "RR Plastic";
 export const WHATSAPP_NUMBER = "60194629600";
 export const SECONDARY_PHONE_NUMBER = "601137161937";
+export const DEFAULT_SITE_URL = "https://rrplastic.com.my";
 export const FALLBACK_R2_PUBLIC_URL = "https://pub-xxxxx.r2.dev";
 export const MAX_REFERENCE_IMAGE_SIZE = 5 * 1024 * 1024;
 export const ACCEPTED_REFERENCE_IMAGE_TYPES = [
@@ -57,6 +58,10 @@ export const BRANCH_LOCATIONS = [
 
 export function getGoogleMapsEmbedUrl(query: string) {
   return `https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`;
+}
+
+export function getSiteUrl() {
+  return (process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_URL).replace(/\/$/, "");
 }
 
 export function cn(...inputs: ClassValue[]) {

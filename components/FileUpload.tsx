@@ -5,6 +5,7 @@ import { LoaderCircle, Trash2, UploadCloud } from "lucide-react";
 import type { UploadedReference } from "@/types/quote";
 import { isValidReferenceImage } from "@/lib/utils";
 import { ImageWithFallback } from "@/components/ImageWithFallback";
+import { useLanguage } from "@/components/LanguageProvider";
 
 interface FileUploadProps {
   label: string;
@@ -19,8 +20,29 @@ export function FileUpload({
   value,
   onChange,
   folder = "quote-references",
-  helperText = "Optional JPG, PNG, or WEBP image up to 5MB.",
+  helperText,
 }: FileUploadProps) {
+  const { language } = useLanguage();
+  const copy =
+    language === "bm"
+      ? {
+          helper: "Pilihan JPG, PNG, atau WEBP sehingga 5MB.",
+          failed: "Upload gagal. Sila cuba lagi.",
+          uploading: "Sedang upload gambar rujukan...",
+          complete: "siap",
+          click: "Klik untuk upload gambar rujukan",
+          view: "Lihat gambar yang diupload",
+          remove: "Buang",
+        }
+      : {
+          helper: "Optional JPG, PNG, or WEBP image up to 5MB.",
+          failed: "Upload failed. Please try again.",
+          uploading: "Uploading reference image...",
+          complete: "complete",
+          click: "Click to upload a reference image",
+          view: "View uploaded image",
+          remove: "Remove",
+        };
   const inputId = useId();
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -57,7 +79,7 @@ export function FileUpload({
         };
 
         if (request.status >= 400 || !parsed.url || !parsed.key) {
-          setError(parsed.error || "Upload failed. Please try again.");
+          setError(parsed.error || copy.failed);
           return;
         }
 
@@ -67,13 +89,13 @@ export function FileUpload({
           url: parsed.url,
         });
       } catch {
-        setError("Upload failed. Please try again.");
+        setError(copy.failed);
       }
     });
 
     request.addEventListener("error", () => {
       setIsUploading(false);
-      setError("Upload failed. Please try again.");
+      setError(copy.failed);
     });
 
     request.send(formData);
@@ -114,17 +136,19 @@ export function FileUpload({
           <>
             <LoaderCircle className="h-6 w-6 animate-spin text-[#0F4C81]" />
             <p className="mt-3 text-sm font-medium text-[#1F2933]">
-              Uploading reference image...
+              {copy.uploading}
             </p>
-            <p className="mt-1 text-xs text-[#6B7280]">{progress}% complete</p>
+            <p className="mt-1 text-xs text-[#6B7280]">
+              {progress}% {copy.complete}
+            </p>
           </>
         ) : (
           <>
             <UploadCloud className="h-6 w-6 text-[#0F4C81]" />
             <p className="mt-3 text-sm font-medium text-[#1F2933]">
-              Click to upload a reference image
+              {copy.click}
             </p>
-            <p className="mt-1 text-xs text-[#6B7280]">{helperText}</p>
+            <p className="mt-1 text-xs text-[#6B7280]">{helperText || copy.helper}</p>
           </>
         )}
       </label>
@@ -149,7 +173,7 @@ export function FileUpload({
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                View uploaded image
+                {copy.view}
               </a>
             </div>
           </div>
@@ -159,7 +183,7 @@ export function FileUpload({
             onClick={() => onChange(undefined)}
           >
             <Trash2 className="h-4 w-4" />
-            Remove
+            {copy.remove}
           </button>
         </div>
       ) : null}

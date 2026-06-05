@@ -2,6 +2,7 @@
 
 import type { OrderType, QuoteCustomerDetails, UploadedReference } from "@/types/quote";
 import { FileUpload } from "@/components/FileUpload";
+import { useLanguage } from "@/components/LanguageProvider";
 
 interface CustomerDetailsFormProps {
   values: QuoteCustomerDetails;
@@ -18,16 +19,62 @@ export function CustomerDetailsForm({
   values,
   onChange,
 }: CustomerDetailsFormProps) {
+  const { language } = useLanguage();
+  const copy =
+    language === "bm"
+      ? {
+          title: "Maklumat Pelanggan",
+          description: "Isi maklumat sebelum hantar senarai produk ke WhatsApp.",
+          name: "Nama",
+          company: "Nama Syarikat",
+          phone: "Nombor Telefon",
+          email: "Email",
+          area: "Kawasan Penghantaran",
+          date: "Tarikh Diperlukan",
+          orderType: "Jenis Permintaan",
+          extra: "Mesej Tambahan",
+          extraPlaceholder:
+            "Tambah nota penghantaran, keperluan saiz khas, atau arahan umum.",
+          reference: "Gambar Rujukan Umum",
+          referenceName: "Gambar rujukan umum",
+          orderTypes: {
+            "Quotation only": "Tanya harga sahaja",
+            "Ready to order": "Sedia untuk order",
+            "Need recommendation": "Perlu cadangan",
+          },
+        }
+      : {
+          title: "Customer Details",
+          description: "Fill in your details before sending the full quote list to WhatsApp.",
+          name: "Name",
+          company: "Company Name",
+          phone: "Phone Number",
+          email: "Email",
+          area: "Delivery Area",
+          date: "Required Date",
+          orderType: "Order Type",
+          extra: "Extra Message",
+          extraPlaceholder:
+            "Add delivery notes, custom size requirements, or general instructions.",
+          reference: "General Reference Image",
+          referenceName: "General reference image",
+          orderTypes: {
+            "Quotation only": "Quotation only",
+            "Ready to order": "Ready to order",
+            "Need recommendation": "Need recommendation",
+          },
+        };
+
   return (
     <div className="rounded-2xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
-      <h2 className="text-2xl font-semibold text-[#1F2933]">Customer Details</h2>
+      <h2 className="text-2xl font-semibold text-[#1F2933]">{copy.title}</h2>
       <p className="mt-2 text-sm leading-7 text-[#6B7280]">
-        Fill in your details before sending the full quote list to WhatsApp.
+        {copy.description}
       </p>
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <label className="block text-sm font-medium text-[#1F2933]">
-          Name
+          {copy.name}
           <input
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             required
@@ -37,7 +84,7 @@ export function CustomerDetailsForm({
           />
         </label>
         <label className="block text-sm font-medium text-[#1F2933]">
-          Company Name
+          {copy.company}
           <input
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             type="text"
@@ -46,7 +93,7 @@ export function CustomerDetailsForm({
           />
         </label>
         <label className="block text-sm font-medium text-[#1F2933]">
-          Phone Number
+          {copy.phone}
           <input
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             required
@@ -56,7 +103,7 @@ export function CustomerDetailsForm({
           />
         </label>
         <label className="block text-sm font-medium text-[#1F2933]">
-          Email
+          {copy.email}
           <input
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             type="email"
@@ -65,7 +112,7 @@ export function CustomerDetailsForm({
           />
         </label>
         <label className="block text-sm font-medium text-[#1F2933]">
-          Delivery Area
+          {copy.area}
           <input
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             type="text"
@@ -74,7 +121,7 @@ export function CustomerDetailsForm({
           />
         </label>
         <label className="block text-sm font-medium text-[#1F2933]">
-          Required Date
+          {copy.date}
           <input
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             type="date"
@@ -83,7 +130,7 @@ export function CustomerDetailsForm({
           />
         </label>
         <label className="block text-sm font-medium text-[#1F2933] md:col-span-2">
-          Order Type
+          {copy.orderType}
           <select
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             value={values.orderType}
@@ -93,7 +140,7 @@ export function CustomerDetailsForm({
           >
             {orderTypes.map((option) => (
               <option key={option} value={option}>
-                {option}
+                {copy.orderTypes[option]}
               </option>
             ))}
           </select>
@@ -101,10 +148,10 @@ export function CustomerDetailsForm({
       </div>
 
       <label className="mt-4 block text-sm font-medium text-[#1F2933]">
-        Extra Message
+        {copy.extra}
         <textarea
           className="mt-2 min-h-28 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 py-3 text-sm outline-none transition focus:border-[#0F4C81]"
-          placeholder="Add delivery notes, custom size requirements, or general instructions."
+          placeholder={copy.extraPlaceholder}
           value={values.extraMessage}
           onChange={(event) => onChange({ extraMessage: event.target.value })}
         />
@@ -112,12 +159,12 @@ export function CustomerDetailsForm({
 
       <div className="mt-4">
         <FileUpload
-          label="General Reference Image"
+          label={copy.reference}
           value={
             values.generalReferenceImageUrl
               ? ({
                   key: values.generalReferenceImageKey || "",
-                  name: values.generalReferenceImageName || "General reference image",
+                  name: values.generalReferenceImageName || copy.referenceName,
                   url: values.generalReferenceImageUrl,
                 } satisfies UploadedReference)
               : undefined

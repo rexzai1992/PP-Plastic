@@ -4,23 +4,30 @@ import Link from "next/link";
 import { Menu, Phone, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useLanguage } from "@/components/LanguageProvider";
 import { useQuoteCartStore } from "@/store/quoteCartStore";
 import { cn, SITE_NAME_SHORT } from "@/lib/utils";
 
 const navigationItems = [
-  { href: "/", label: "Home" },
-  { href: "/products", label: "Products" },
-  { href: "/categories", label: "Categories" },
-  { href: "/quote-list", label: "Quote List" },
-  { href: "/request-quote", label: "Request Quote" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/", label: { en: "Home", bm: "Utama" } },
+  { href: "/products", label: { en: "Products", bm: "Produk" } },
+  { href: "/categories", label: { en: "Categories", bm: "Kategori" } },
+  { href: "/quote-list", label: { en: "Quote List", bm: "Senarai Harga" } },
+  { href: "/request-quote", label: { en: "Request Quote", bm: "Minta Harga" } },
+  { href: "/about", label: { en: "About", bm: "Tentang" } },
+  { href: "/contact", label: { en: "Contact", bm: "Hubungi" } },
 ];
 
 export function Navbar() {
   const pathname = usePathname();
   const itemCount = useQuoteCartStore((state) => state.items.length);
+  const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+  const deliveryLabel =
+    language === "bm"
+      ? "Penghantaran Kedah, Pulau Pinang, Perlis & Perak"
+      : "Kedah, Penang, Perlis & Perak delivery";
 
   return (
     <header className="sticky top-0 z-40 border-b border-[#E5E7EB] bg-white/95 backdrop-blur-sm">
@@ -31,7 +38,7 @@ export function Navbar() {
           </Link>
           <div className="hidden items-center gap-2 rounded-full border border-[#E5E7EB] bg-[#F7F8FA] px-3 py-1 text-sm text-[#6B7280] lg:flex">
             <Phone className="h-4 w-4" />
-            Kedah, Penang, Perlis & Perak delivery
+            {deliveryLabel}
           </div>
         </div>
 
@@ -50,20 +57,25 @@ export function Navbar() {
                 )}
                 href={item.href}
               >
-                {item.label}
+                {item.label[language]}
                 {item.href === "/quote-list" ? ` (${itemCount})` : ""}
               </Link>
             );
           })}
+          <LanguageToggle />
         </nav>
 
-        <button
-          className="inline-flex rounded-lg border border-[#D6DCE3] p-2 text-[#1F2933] lg:hidden"
-          type="button"
-          onClick={() => setIsOpen((current) => !current)}
-        >
-          {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <LanguageToggle />
+          <button
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            className="inline-flex rounded-lg border border-[#D6DCE3] p-2 text-[#1F2933]"
+            type="button"
+            onClick={() => setIsOpen((current) => !current)}
+          >
+            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {isOpen ? (
@@ -84,11 +96,14 @@ export function Navbar() {
                   href={item.href}
                   onClick={() => setIsOpen(false)}
                 >
-                  {item.label}
+                  {item.label[language]}
                   {item.href === "/quote-list" ? ` (${itemCount})` : ""}
                 </Link>
               );
             })}
+            <div className="px-3 pt-3">
+              <LanguageToggle compact />
+            </div>
           </div>
         </div>
       ) : null}

@@ -6,6 +6,7 @@ import type { Product } from "@/types/product";
 import type { UploadedReference } from "@/types/quote";
 import { generateSingleProductMessage, generateWhatsAppLink } from "@/lib/whatsapp";
 import { useQuoteCartStore } from "@/store/quoteCartStore";
+import { useLanguage } from "@/components/LanguageProvider";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { FileUpload } from "@/components/FileUpload";
 
@@ -19,12 +20,43 @@ interface ProductSpecSelectorProps {
 
 export function ProductSpecSelector({
   product,
-  submitLabel = "Add to Quote",
+  submitLabel,
   onAdded,
   showWhatsAppButton = true,
   compact = false,
 }: ProductSpecSelectorProps) {
   const addItem = useQuoteCartStore((state) => state.addItem);
+  const { language } = useLanguage();
+  const copy =
+    language === "bm"
+      ? {
+          add: "Tambah ke Senarai",
+          notSelected: "Belum dipilih",
+          size: "Saiz",
+          thickness: "Ketebalan",
+          color: "Warna",
+          quantity: "Kuantiti",
+          notes: "Nota",
+          notesPlaceholder: "Nota pilihan untuk team jualan",
+          referenceImage: "Gambar Rujukan",
+          directWhatsapp: "Tanya Harga di WhatsApp",
+          quantityError: "Kuantiti mesti lebih daripada 0.",
+          added: "ditambah ke senarai harga.",
+        }
+      : {
+          add: "Add to Quote",
+          notSelected: "Not selected",
+          size: "Size",
+          thickness: "Thickness",
+          color: "Color",
+          quantity: "Quantity",
+          notes: "Notes",
+          notesPlaceholder: "Optional notes for your sales team",
+          referenceImage: "Reference Image",
+          directWhatsapp: "Direct WhatsApp Quote",
+          quantityError: "Quantity must be more than 0.",
+          added: "added to your quote list.",
+        };
   const [size, setSize] = useState("");
   const [thickness, setThickness] = useState("");
   const [color, setColor] = useState("");
@@ -45,7 +77,7 @@ export function ProductSpecSelector({
 
   function handleAddToQuote() {
     if (quantity <= 0) {
-      toast.error("Quantity must be more than 0.");
+      toast.error(copy.quantityError);
       return;
     }
 
@@ -66,7 +98,7 @@ export function ProductSpecSelector({
         selectedThickness: thickness,
         slug: product.slug,
       });
-      toast.success(`${product.name} added to your quote list.`);
+      toast.success(`${product.name} ${copy.added}`);
       onAdded?.();
     });
   }
@@ -75,13 +107,13 @@ export function ProductSpecSelector({
     <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
       <div className={`grid gap-4 ${compact ? "md:grid-cols-2" : ""}`}>
         <label className="block text-sm font-medium text-[#1F2933]">
-          Size
+          {copy.size}
           <select
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             value={size}
             onChange={(event) => setSize(event.target.value)}
           >
-            <option value="">Not selected</option>
+            <option value="">{copy.notSelected}</option>
             {product.sizes.map((option) => (
               <option key={option} value={option}>
                 {option}
@@ -91,13 +123,13 @@ export function ProductSpecSelector({
         </label>
 
         <label className="block text-sm font-medium text-[#1F2933]">
-          Thickness
+          {copy.thickness}
           <select
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             value={thickness}
             onChange={(event) => setThickness(event.target.value)}
           >
-            <option value="">Not selected</option>
+            <option value="">{copy.notSelected}</option>
             {product.thickness.map((option) => (
               <option key={option} value={option}>
                 {option}
@@ -107,13 +139,13 @@ export function ProductSpecSelector({
         </label>
 
         <label className="block text-sm font-medium text-[#1F2933]">
-          Color
+          {copy.color}
           <select
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             value={color}
             onChange={(event) => setColor(event.target.value)}
           >
-            <option value="">Not selected</option>
+            <option value="">{copy.notSelected}</option>
             {product.colors.map((option) => (
               <option key={option} value={option}>
                 {option}
@@ -123,7 +155,7 @@ export function ProductSpecSelector({
         </label>
 
         <label className="block text-sm font-medium text-[#1F2933]">
-          Quantity
+          {copy.quantity}
           <input
             className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
             min={1}
@@ -135,10 +167,10 @@ export function ProductSpecSelector({
       </div>
 
       <label className="mt-4 block text-sm font-medium text-[#1F2933]">
-        Notes
+        {copy.notes}
         <textarea
           className="mt-2 min-h-28 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 py-3 text-sm outline-none transition focus:border-[#0F4C81]"
-          placeholder="Optional notes for your sales team"
+          placeholder={copy.notesPlaceholder}
           value={notes}
           onChange={(event) => setNotes(event.target.value)}
         />
@@ -146,7 +178,7 @@ export function ProductSpecSelector({
 
       <div className="mt-4">
         <FileUpload
-          label="Reference Image"
+          label={copy.referenceImage}
           value={reference}
           onChange={(nextValue) => setReference(nextValue)}
         />
@@ -158,10 +190,10 @@ export function ProductSpecSelector({
           type="button"
           onClick={handleAddToQuote}
         >
-          {submitLabel}
+          {submitLabel || copy.add}
         </button>
         {showWhatsAppButton ? (
-          <WhatsAppButton href={whatsappHref} label="Direct WhatsApp Quote" variant="secondary" />
+          <WhatsAppButton href={whatsappHref} label={copy.directWhatsapp} variant="secondary" />
         ) : null}
       </div>
     </div>

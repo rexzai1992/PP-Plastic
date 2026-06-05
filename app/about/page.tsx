@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LocalizedText } from "@/components/LocalizedText";
 import { SectionTitle } from "@/components/SectionTitle";
 import {
   BRANCH_LOCATIONS,
@@ -19,28 +20,46 @@ export default function AboutPage() {
       <section className="border-b border-[#E5E7EB] bg-[#F7F8FA]">
         <div className="page-shell py-14">
           <SectionTitle
-            eyebrow="About Us"
-            title={`${SITE_NAME_FULL} sebagai pembekal plastik dan packaging`}
-            description={`${SITE_NAME_FULL} ialah perniagaan 100% Bumiputera yang menjalankan jualan barangan plastik, pembungkusan, dan pelbagai produk pilihan dari Thailand.`}
+            eyebrow={<LocalizedText en="About Us" bm="Tentang Kami" />}
+            title={
+              <LocalizedText
+                en={`${SITE_NAME_FULL} as a plastic and packaging supplier`}
+                bm={`${SITE_NAME_FULL} sebagai pembekal plastik dan pembungkusan`}
+              />
+            }
+            description={
+              <LocalizedText
+                en={`${SITE_NAME_FULL} is a 100% Bumiputera business supplying plastic goods, packaging products, and selected items from Thailand.`}
+                bm={`${SITE_NAME_FULL} ialah perniagaan 100% Bumiputera yang menjalankan jualan barangan plastik, pembungkusan, dan pelbagai produk pilihan dari Thailand.`}
+              />
+            }
           />
         </div>
       </section>
 
       <section className="page-shell page-section grid gap-8 lg:grid-cols-[1fr_0.9fr]">
         <div className="rounded-3xl border border-[#E5E7EB] bg-white p-8 shadow-sm">
-          <h2 className="text-2xl font-semibold text-[#1F2933]">Profil Perniagaan</h2>
+          <h2 className="text-2xl font-semibold text-[#1F2933]">
+            <LocalizedText en="Business Profile" bm="Profil Perniagaan" />
+          </h2>
           <p className="mt-4 text-base leading-8 text-[#4B5563]">
-            {BUSINESS_PROFILE_TEXT}
+            <LocalizedText
+              en={`${SITE_NAME_FULL} supplies plastic goods, packaging products, and related items for business customers in northern Malaysia.`}
+              bm={BUSINESS_PROFILE_TEXT}
+            />
           </p>
           <p className="mt-4 text-base leading-8 text-[#4B5563]">
-            Di laman ini, kami kekalkan aliran permintaan sebut harga supaya pelanggan
-            boleh semak produk, pilih spesifikasi, dan hubungi terus pasukan jualan
-            melalui WhatsApp.
+            <LocalizedText
+              en="This website keeps the quote request flow simple so customers can check products, choose specifications, and contact the sales team directly through WhatsApp."
+              bm="Di laman ini, kami kekalkan aliran permintaan sebut harga supaya pelanggan boleh semak produk, pilih spesifikasi, dan hubungi terus pasukan jualan melalui WhatsApp."
+            />
           </p>
         </div>
 
         <div className="rounded-3xl border border-[#E5E7EB] bg-white p-8 shadow-sm">
-          <h2 className="text-2xl font-semibold text-[#1F2933]">Branch Locations</h2>
+          <h2 className="text-2xl font-semibold text-[#1F2933]">
+            <LocalizedText en="Branch Locations" bm="Lokasi Cawangan" />
+          </h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {BRANCH_LOCATIONS.map((branch) => (
               <div
@@ -58,7 +77,15 @@ export default function AboutPage() {
 
       <section className="border-t border-[#E5E7EB] bg-[#F7F8FA]">
         <div className="page-shell page-section">
-          <SectionTitle eyebrow="Services" title="Perkhidmatan & kekuatan utama" />
+          <SectionTitle
+            eyebrow={<LocalizedText en="Services" bm="Servis" />}
+            title={
+              <LocalizedText
+                en="Main services and strengths"
+                bm="Perkhidmatan & kekuatan utama"
+              />
+            }
+          />
           <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-5">
             {SERVICE_HIGHLIGHTS.map((reason) => (
               <div

@@ -1,6 +1,24 @@
 # PP-Plastic
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Next.js catalogue and quote request site for RR Plastic Packaging Trading.
+
+## SEO setup
+
+Set the production domain before deploying so canonical URLs, OpenGraph metadata,
+`robots.txt`, `sitemap.xml`, and structured data use the correct site address:
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://your-domain.com
+```
+
+The site includes:
+
+- SEO metadata and OpenGraph tags
+- LocalBusiness / Organization / WebSite JSON-LD structured data
+- Generated `robots.txt`
+- Generated `sitemap.xml`
+- `public/llms.txt` for AI crawler context
+- Footer copyright and business/service-area text
 
 ## Getting Started
 

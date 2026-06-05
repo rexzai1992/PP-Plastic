@@ -8,12 +8,14 @@ import {
   RECENT_PRODUCTS_UPDATED_EVENT,
 } from "@/lib/quoteCart";
 import { ImageWithFallback } from "@/components/ImageWithFallback";
+import { useLanguage } from "@/components/LanguageProvider";
 
 interface RecentlyViewedProps {
   currentSlug: string;
 }
 
 export function RecentlyViewed({ currentSlug }: RecentlyViewedProps) {
+  const { language } = useLanguage();
   const recentSlugs = useSyncExternalStore(
     (callback) => {
       if (typeof window === "undefined") {
@@ -30,7 +32,7 @@ export function RecentlyViewed({ currentSlug }: RecentlyViewedProps) {
       };
     },
     () => getRecentlyViewedProductSlugs(),
-    () => [],
+    () => getRecentlyViewedProductSlugs(),
   );
 
   const recentProducts = recentSlugs
@@ -44,7 +46,9 @@ export function RecentlyViewed({ currentSlug }: RecentlyViewedProps) {
 
   return (
     <section className="mt-12">
-      <h2 className="text-2xl font-semibold text-[#1F2933]">Recently Viewed Products</h2>
+      <h2 className="text-2xl font-semibold text-[#1F2933]">
+        {language === "bm" ? "Produk Baru Dilihat" : "Recently Viewed Products"}
+      </h2>
       <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {recentProducts.map((product) => (
           <Link

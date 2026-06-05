@@ -1,6 +1,4 @@
 import type { Category } from "@/types/category";
-import { buildPublicAssetUrl } from "@/lib/utils";
-import { referenceCategoryImagesBySlug } from "@/data/referenceCatalog";
 
 const categorySeeds = [
   {
@@ -81,8 +79,6 @@ const categorySeeds = [
 // Replace this catalogue seed data with a database query when admin-managed categories are added.
 export const categories: Category[] = categorySeeds.map((category) => ({
   ...category,
-  imageKey: `categories/${category.slug}.webp`,
-  image:
-    referenceCategoryImagesBySlug[category.slug] ||
-    buildPublicAssetUrl(`categories/${category.slug}.webp`),
+  imageKey: `categories/${category.slug}.png`,
+  image: `/categories/${category.slug}.png`,
 }));

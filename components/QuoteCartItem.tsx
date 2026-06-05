@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { toast } from "sonner";
-import { Pencil, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import { products } from "@/data/products";
 import type { QuoteCartItem as QuoteCartItemType, UploadedReference } from "@/types/quote";
 import { FileUpload } from "@/components/FileUpload";
 import { ImageWithFallback } from "@/components/ImageWithFallback";
+import { useLanguage } from "@/components/LanguageProvider";
 import { useQuoteCartStore } from "@/store/quoteCartStore";
 
 interface QuoteCartItemProps {
@@ -16,41 +15,53 @@ interface QuoteCartItemProps {
 export function QuoteCartItem({ item }: QuoteCartItemProps) {
   const updateItem = useQuoteCartStore((state) => state.updateItem);
   const removeItem = useQuoteCartStore((state) => state.removeItem);
-  const product = products.find((candidate) => candidate.slug === item.slug);
-  const [isEditing, setIsEditing] = useState(false);
-  const [size, setSize] = useState(item.selectedSize);
-  const [thickness, setThickness] = useState(item.selectedThickness);
-  const [color, setColor] = useState(item.selectedColor);
-  const [quantity, setQuantity] = useState(item.quantity);
-  const [notes, setNotes] = useState(item.notes);
-  const [reference, setReference] = useState<UploadedReference | undefined>(
-    item.referenceImageUrl
+  const { language } = useLanguage();
+  const copy =
+    language === "bm"
       ? {
-          key: item.referenceImageKey || "",
-          name: item.referenceImageName || "Reference image",
-          url: item.referenceImageUrl,
+          referenceName: "Gambar rujukan",
+          remove: "Buang",
+          size: "Saiz",
+          thickness: "Ketebalan",
+          color: "Warna",
+          quantity: "Kuantiti",
+          notes: "Nota",
+          notesPlaceholder: "Nota tambahan untuk item ini",
+          notSelected: "Belum dipilih",
+          reference: "Gambar Rujukan",
+          decrease: "Kurangkan kuantiti",
+          increase: "Tambah kuantiti",
         }
-      : undefined,
-  );
+      : {
+          referenceName: "Reference image",
+          remove: "Remove",
+          size: "Size",
+          thickness: "Thickness",
+          color: "Color",
+          quantity: "Quantity",
+          notes: "Notes",
+          notesPlaceholder: "Extra notes for this item",
+          notSelected: "Not selected",
+          reference: "Reference Image",
+          decrease: "Decrease quantity",
+          increase: "Increase quantity",
+        };
+  const product = products.find((candidate) => candidate.slug === item.slug);
 
-  function handleSave() {
-    if (quantity <= 0) {
-      toast.error("Quantity must be more than 0.");
-      return;
-    }
+  function updateQuoteItem(updates: Partial<QuoteCartItemType>) {
+    updateItem(item.id, updates);
+  }
 
-    updateItem(item.id, {
-      notes,
-      quantity,
+  function updateQuantity(nextQuantity: number) {
+    updateQuoteItem({ quantity: Math.max(1, nextQuantity) });
+  }
+
+  function updateReference(reference?: UploadedReference) {
+    updateQuoteItem({
       referenceImageKey: reference?.key,
       referenceImageName: reference?.name,
       referenceImageUrl: reference?.url,
-      selectedColor: color,
-      selectedSize: size,
-      selectedThickness: thickness,
     });
-    setIsEditing(false);
-    toast.success("Quote item updated.");
   }
 
   return (
@@ -74,156 +85,125 @@ export function QuoteCartItem({ item }: QuoteCartItemProps) {
                 {item.category} • {item.material}
               </p>
             </div>
-            <div className="flex gap-2">
-              <button
-                className="inline-flex items-center rounded-lg border border-[#D6DCE3] px-3 py-2 text-sm font-medium text-[#1F2933]"
-                type="button"
-                onClick={() => setIsEditing((current) => !current)}
-              >
-                <Pencil className="mr-2 h-4 w-4" />
-                {isEditing ? "Cancel" : "Edit"}
-              </button>
-              <button
-                className="inline-flex items-center rounded-lg border border-[#FECACA] bg-[#FEF2F2] px-3 py-2 text-sm font-medium text-[#B91C1C]"
-                type="button"
-                onClick={() => removeItem(item.id)}
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Remove
-              </button>
-            </div>
+            <button
+              className="inline-flex w-fit items-center rounded-lg border border-[#FECACA] bg-[#FEF2F2] px-3 py-2 text-sm font-medium text-[#B91C1C]"
+              type="button"
+              onClick={() => removeItem(item.id)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              {copy.remove}
+            </button>
           </div>
 
-          {!isEditing ? (
-            <dl className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <div>
-                <dt className="text-sm text-[#6B7280]">Size</dt>
-                <dd className="mt-1 text-sm font-medium text-[#1F2933]">
-                  {item.selectedSize || "Not selected"}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-sm text-[#6B7280]">Thickness</dt>
-                <dd className="mt-1 text-sm font-medium text-[#1F2933]">
-                  {item.selectedThickness || "Not selected"}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-sm text-[#6B7280]">Color</dt>
-                <dd className="mt-1 text-sm font-medium text-[#1F2933]">
-                  {item.selectedColor || "Not selected"}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-sm text-[#6B7280]">Quantity</dt>
-                <dd className="mt-1 text-sm font-medium text-[#1F2933]">{item.quantity}</dd>
-              </div>
-              <div className="sm:col-span-2 lg:col-span-4">
-                <dt className="text-sm text-[#6B7280]">Notes</dt>
-                <dd className="mt-1 text-sm leading-6 text-[#1F2933]">
-                  {item.notes || "No notes added."}
-                </dd>
-              </div>
-              {item.referenceImageUrl ? (
-                <div className="sm:col-span-2 lg:col-span-4">
-                  <dt className="text-sm text-[#6B7280]">Reference Image</dt>
-                  <dd className="mt-1 text-sm">
-                    <a
-                      className="font-medium text-[#0F4C81]"
-                      href={item.referenceImageUrl}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      View uploaded reference
-                    </a>
-                  </dd>
-                </div>
-              ) : null}
-            </dl>
-          ) : (
-            <div className="mt-5 space-y-4 rounded-2xl border border-[#E5E7EB] bg-[#F7F8FA] p-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <label className="block text-sm font-medium text-[#1F2933]">
-                  Size
-                  <select
-                    className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
-                    value={size}
-                    onChange={(event) => setSize(event.target.value)}
-                  >
-                    <option value="">Not selected</option>
-                    {(product?.sizes ?? []).map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="block text-sm font-medium text-[#1F2933]">
-                  Thickness
-                  <select
-                    className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
-                    value={thickness}
-                    onChange={(event) => setThickness(event.target.value)}
-                  >
-                    <option value="">Not selected</option>
-                    {(product?.thickness ?? []).map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="block text-sm font-medium text-[#1F2933]">
-                  Color
-                  <select
-                    className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
-                    value={color}
-                    onChange={(event) => setColor(event.target.value)}
-                  >
-                    <option value="">Not selected</option>
-                    {(product?.colors ?? []).map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="block text-sm font-medium text-[#1F2933]">
-                  Quantity
-                  <input
-                    className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
-                    min={1}
-                    type="number"
-                    value={quantity}
-                    onChange={(event) => setQuantity(Number(event.target.value))}
-                  />
-                </label>
-              </div>
-
+          <div className="mt-5 space-y-4 rounded-2xl border border-[#E5E7EB] bg-[#F7F8FA] p-4">
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               <label className="block text-sm font-medium text-[#1F2933]">
-                Notes
-                <textarea
-                  className="mt-2 min-h-24 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 py-3 text-sm outline-none transition focus:border-[#0F4C81]"
-                  value={notes}
-                  onChange={(event) => setNotes(event.target.value)}
-                />
+                {copy.size}
+                <select
+                  className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
+                  value={item.selectedSize}
+                  onChange={(event) => updateQuoteItem({ selectedSize: event.target.value })}
+                >
+                  <option value="">{copy.notSelected}</option>
+                  {(product?.sizes ?? []).map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               </label>
 
-              <FileUpload
-                label="Reference Image"
-                value={reference}
-                onChange={(nextValue) => setReference(nextValue)}
-              />
+              <label className="block text-sm font-medium text-[#1F2933]">
+                {copy.thickness}
+                <select
+                  className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
+                  value={item.selectedThickness}
+                  onChange={(event) =>
+                    updateQuoteItem({ selectedThickness: event.target.value })
+                  }
+                >
+                  <option value="">{copy.notSelected}</option>
+                  {(product?.thickness ?? []).map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-              <button
-                className="inline-flex rounded-lg bg-[#0F4C81] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0C3B63]"
-                type="button"
-                onClick={handleSave}
-              >
-                Save Changes
-              </button>
+              <label className="block text-sm font-medium text-[#1F2933]">
+                {copy.color}
+                <select
+                  className="mt-2 h-11 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 text-sm outline-none transition focus:border-[#0F4C81]"
+                  value={item.selectedColor}
+                  onChange={(event) => updateQuoteItem({ selectedColor: event.target.value })}
+                >
+                  <option value="">{copy.notSelected}</option>
+                  {(product?.colors ?? []).map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <div>
+                <span className="block text-sm font-medium text-[#1F2933]">
+                  {copy.quantity}
+                </span>
+                <div className="mt-2 grid h-11 grid-cols-[44px_1fr_44px] overflow-hidden rounded-lg border border-[#D6DCE3] bg-white">
+                  <button
+                    aria-label={copy.decrease}
+                    className="inline-flex items-center justify-center border-r border-[#D6DCE3] text-[#1F2933] transition-colors hover:bg-[#EEF2F6] disabled:cursor-not-allowed disabled:text-[#CBD5E1]"
+                    disabled={item.quantity <= 1}
+                    type="button"
+                    onClick={() => updateQuantity(item.quantity - 1)}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <input
+                    className="min-w-0 px-3 text-center text-sm font-semibold text-[#1F2933] outline-none"
+                    min={1}
+                    type="number"
+                    value={item.quantity}
+                    onChange={(event) => updateQuantity(Number(event.target.value) || 1)}
+                  />
+                  <button
+                    aria-label={copy.increase}
+                    className="inline-flex items-center justify-center border-l border-[#D6DCE3] text-[#1F2933] transition-colors hover:bg-[#EEF2F6]"
+                    type="button"
+                    onClick={() => updateQuantity(item.quantity + 1)}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
             </div>
-          )}
+
+            <label className="block text-sm font-medium text-[#1F2933]">
+              {copy.notes}
+              <textarea
+                className="mt-2 min-h-20 w-full rounded-lg border border-[#D6DCE3] bg-white px-3 py-3 text-sm outline-none transition focus:border-[#0F4C81]"
+                placeholder={copy.notesPlaceholder}
+                value={item.notes}
+                onChange={(event) => updateQuoteItem({ notes: event.target.value })}
+              />
+            </label>
+
+            <FileUpload
+              label={copy.reference}
+              value={
+                item.referenceImageUrl
+                  ? {
+                      key: item.referenceImageKey || "",
+                      name: item.referenceImageName || copy.referenceName,
+                      url: item.referenceImageUrl,
+                    }
+                  : undefined
+              }
+              onChange={updateReference}
+            />
+          </div>
         </div>
       </div>
     </article>

@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import type { Product } from "@/types/product";
+import { useLanguage } from "@/components/LanguageProvider";
 import { ProductSpecSelector } from "@/components/ProductSpecSelector";
 
 interface AddToQuoteModalProps {
@@ -10,6 +11,20 @@ interface AddToQuoteModalProps {
 }
 
 export function AddToQuoteModal({ product, onClose }: AddToQuoteModalProps) {
+  const { language } = useLanguage();
+  const copy =
+    language === "bm"
+      ? {
+          eyebrow: "Tambah Cepat",
+          description:
+            "Pilih spesifikasi, kuantiti, dan nota pilihan sebelum tambah item ini ke senarai harga.",
+        }
+      : {
+          eyebrow: "Quick Add to Quote",
+          description:
+            "Choose specifications, quantity, and optional notes before adding this item to your quote list.",
+        };
+
   if (!product) {
     return null;
   }
@@ -20,12 +35,11 @@ export function AddToQuoteModal({ product, onClose }: AddToQuoteModalProps) {
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#0F4C81]">
-              Quick Add to Quote
+              {copy.eyebrow}
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-[#1F2933]">{product.name}</h2>
             <p className="mt-2 text-sm text-[#6B7280]">
-              Choose specifications, quantity, and optional notes before adding this item to
-              your quote list.
+              {copy.description}
             </p>
           </div>
           <button
