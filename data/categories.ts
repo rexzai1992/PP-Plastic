@@ -79,6 +79,6 @@ const categorySeeds = [
 // Replace this catalogue seed data with a database query when admin-managed categories are added.
 export const categories: Category[] = categorySeeds.map((category) => ({
   ...category,
-  imageKey: `categories/${category.slug}.png`,
-  image: `/categories/${category.slug}.png`,
+  imageKey: `categories/${category.slug}.webp`,
+  image: `/categories/${category.slug}.webp`,
 }));

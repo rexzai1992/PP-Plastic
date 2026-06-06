@@ -126,7 +126,7 @@ export function HeroSection() {
             alt="Large plastic rolls for packing and wrapping on warehouse shelving"
             className="object-cover object-center"
             sizes="100vw"
-            src="/categories/plastic-rolls.png"
+            src="/categories/plastic-rolls.webp"
           />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(16,42,67,0.97)_0%,rgba(16,42,67,0.88)_42%,rgba(16,42,67,0.42)_100%)]" />
           <div className="absolute inset-x-0 bottom-0 h-2 bg-[var(--brand-yellow)]" />

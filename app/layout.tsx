@@ -83,7 +83,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/categories/plastic-rolls.png",
+        url: "/categories/plastic-rolls.webp",
         width: 800,
         height: 600,
         alt: `${SITE_NAME_FULL} plastic packaging products`,
@@ -95,7 +95,7 @@ export const metadata: Metadata = {
     title: `${SITE_NAME_FULL} | Plastic Packaging Supplier`,
     description:
       "Plastic packaging supplier for Kedah, Pulau Pinang, Perlis, and Perak.",
-    images: ["/categories/plastic-rolls.png"],
+    images: ["/categories/plastic-rolls.webp"],
   },
 };
 

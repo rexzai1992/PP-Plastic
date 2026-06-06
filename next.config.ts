@@ -14,6 +14,7 @@ if (configuredPublicUrl) {
 
 const nextConfig: NextConfig = {
   images: {
+    unoptimized: true,
     remotePatterns: Array.from(configuredHosts).map((hostname) => ({
       protocol: "https",
       hostname,
