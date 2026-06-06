@@ -33,7 +33,6 @@ const homeCopy = {
     shopDescription:
       "Jump straight to any product category instead of scrolling through the full catalogue.",
     allCategories: "View all categories",
-    carouselHint: "Swipe or use arrows to browse all categories.",
     browseItems: "Browse items",
     fastEyebrow: "Fast moving stock",
     fastTitle: "Common items customers ask for first",
@@ -80,7 +79,6 @@ const homeCopy = {
     shopDescription:
       "Terus pilih kategori produk tanpa perlu scroll seluruh katalog.",
     allCategories: "Lihat semua kategori",
-    carouselHint: "Swipe atau guna arrow untuk lihat semua kategori.",
     browseItems: "Lihat item",
     fastEyebrow: "Stok bergerak cepat",
     fastTitle: "Item biasa yang pelanggan tanya dahulu",
@@ -181,10 +179,7 @@ export function HomePageContent({
           </div>
 
           <div className="mt-8">
-            <div className="mb-4 flex items-center justify-between gap-4">
-              <p className="text-sm font-medium text-[#6B7280]">
-                {copy.carouselHint.replace("all categories", `all ${shoppingPaths.length} categories`)}
-              </p>
+            <div className="mb-4 flex justify-end">
               <div className="flex gap-2">
                 <button
                   aria-label="Scroll shop by need left"

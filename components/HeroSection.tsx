@@ -17,6 +17,7 @@ import {
   BRANCH_LOCATIONS,
   SERVICE_REGIONS,
   SITE_NAME_FULL,
+  getGoogleMapsEmbedUrl,
 } from "@/lib/utils";
 
 const heroCopy = {
@@ -279,34 +280,44 @@ export function HeroSection() {
             {BRANCH_LOCATIONS.map((branch) => (
               <div
                 key={branch.name}
-                className="rounded-2xl border border-[#E5E7EB] bg-[#F7F8FA] p-5"
+                className="overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F7F8FA]"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <p className="text-lg font-semibold text-[#1F2933]">{branch.name}</p>
-                  <a
-                    className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-[#0F4C81] hover:text-[#0C3B63]"
-                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(branch.mapQuery)}`}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    {copy.open}
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
+                <iframe
+                  allowFullScreen
+                  className="h-64 w-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src={getGoogleMapsEmbedUrl(branch.mapQuery)}
+                  title={`${branch.name} Google Map`}
+                />
+                <div className="p-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="text-lg font-semibold text-[#1F2933]">{branch.name}</p>
+                    <a
+                      className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-[#0F4C81] hover:text-[#0C3B63]"
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(branch.mapQuery)}`}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      {copy.open}
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </div>
+                  <p className="mt-4 flex items-start gap-2 text-sm leading-6 text-[#4B5563]">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1F6F5B]" />
+                    <span>
+                      <span className="font-semibold text-[#1F2933]">{copy.location}:</span>{" "}
+                      {branch.address}
+                    </span>
+                  </p>
+                  <p className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#4B5563]">
+                    <Clock3 className="mt-0.5 h-4 w-4 shrink-0 text-[#1F6F5B]" />
+                    <span>
+                      <span className="font-semibold text-[#1F2933]">{copy.hours}:</span>{" "}
+                      {branch.hours}
+                    </span>
+                  </p>
                 </div>
-                <p className="mt-4 flex items-start gap-2 text-sm leading-6 text-[#4B5563]">
-                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#1F6F5B]" />
-                  <span>
-                    <span className="font-semibold text-[#1F2933]">{copy.location}:</span>{" "}
-                    {branch.address}
-                  </span>
-                </p>
-                <p className="mt-2 flex items-start gap-2 text-sm leading-6 text-[#4B5563]">
-                  <Clock3 className="mt-0.5 h-4 w-4 shrink-0 text-[#1F6F5B]" />
-                  <span>
-                    <span className="font-semibold text-[#1F2933]">{copy.hours}:</span>{" "}
-                    {branch.hours}
-                  </span>
-                </p>
               </div>
             ))}
           </div>
