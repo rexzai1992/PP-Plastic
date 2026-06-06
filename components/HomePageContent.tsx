@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRef } from "react";
 import { ArrowLeft, ArrowRight, Camera, ClipboardList, Truck } from "lucide-react";
-import type { Product } from "@/types/product";
 import { HeroSection } from "@/components/HeroSection";
 import { ImageWithFallback } from "@/components/ImageWithFallback";
 import { useLanguage } from "@/components/LanguageProvider";
@@ -11,9 +10,20 @@ import { categories } from "@/data/categories";
 import { generateWhatsAppLink } from "@/lib/whatsapp";
 import { formatListPreview, SITE_NAME_FULL } from "@/lib/utils";
 
+export interface HomeProductPreview {
+  id: string;
+  slug: string;
+  name: string;
+  category: string;
+  sizes: string[];
+  moq: string;
+  customSize: boolean;
+  customPrint: boolean;
+}
+
 interface HomePageContentProps {
-  featuredProducts: Product[];
-  popularProducts: Product[];
+  featuredProducts: HomeProductPreview[];
+  popularProducts: HomeProductPreview[];
 }
 
 const homeCopy = {
@@ -266,19 +276,10 @@ export function HomePageContent({
             {fastMovingProducts.map((product) => (
               <Link
                 key={product.id}
-                className="group grid grid-cols-[112px_1fr] overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-sm transition-shadow hover:shadow-md"
+                className="group rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
                 href={`/products/${product.slug}`}
               >
-                <div className="relative min-h-36 border-r border-[#E5E7EB] bg-[#F7F8FA]">
-                  <ImageWithFallback
-                    fill
-                    alt={product.name}
-                    className="object-cover transition-transform duration-200 group-hover:scale-[1.03]"
-                    sizes="112px"
-                    src={product.images[0]}
-                  />
-                </div>
-                <div className="p-4">
+                <div className="flex h-full flex-col">
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#0F4C81]">
                     {product.category}
                   </p>
@@ -291,6 +292,10 @@ export function HomePageContent({
                   <p className="mt-3 text-sm font-semibold text-[#1F2933]">
                     MOQ: {product.moq}
                   </p>
+                  <span className="mt-auto inline-flex items-center pt-4 text-sm font-semibold text-[#0F4C81]">
+                    {copy.browseItems}
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </span>
                 </div>
               </Link>
             ))}
