@@ -5,6 +5,8 @@ import {
   MAX_REFERENCE_IMAGE_SIZE,
 } from "@/lib/utils";
 
+export const runtime = "edge";
+
 const allowedFolders: UploadFolder[] = [
   "quote-references",
   "products",

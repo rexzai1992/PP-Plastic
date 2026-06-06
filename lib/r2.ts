@@ -1,4 +1,3 @@
-import { randomUUID } from "node:crypto";
 import {
   DeleteObjectCommand,
   PutObjectCommand,
@@ -59,14 +58,14 @@ export function getPublicFileUrl(key: string) {
 }
 
 export async function uploadFileToR2(file: File, folder: UploadFolder) {
-  const key = `${folder}/${randomUUID()}-${file.name.replace(/\s+/g, "-")}`;
+  const key = `${folder}/${crypto.randomUUID()}-${file.name.replace(/\s+/g, "-")}`;
   const arrayBuffer = await file.arrayBuffer();
 
   await getR2Client().send(
     new PutObjectCommand({
       Bucket: getBucketName(),
       Key: key,
-      Body: Buffer.from(arrayBuffer),
+      Body: new Uint8Array(arrayBuffer),
       ContentType: file.type,
     }),
   );
@@ -91,7 +90,7 @@ export async function getSignedUploadUrl(
   fileName: string,
   contentType: string,
 ) {
-  const key = `${folder}/${randomUUID()}-${fileName.replace(/\s+/g, "-")}`;
+  const key = `${folder}/${crypto.randomUUID()}-${fileName.replace(/\s+/g, "-")}`;
   const command = new PutObjectCommand({
     Bucket: getBucketName(),
     Key: key,

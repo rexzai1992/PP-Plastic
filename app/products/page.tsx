@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { products } from "@/data/products";
 import { ProductsCatalogue } from "@/components/ProductsCatalogue";
 
+export const runtime = "edge";
+
 export const metadata: Metadata = {
   title: "Plastic Products Catalogue",
   description:
